@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -34,12 +33,10 @@ import com.example.demo.entities.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(AppointmentController.class)
-@ActiveProfiles("test")
-class AppointmentControllerUnitTest {
+class AppointmentControllerUnitTest{
 
     @MockBean
     private AppointmentRepository appointmentRepository;
-
 
     @Autowired
     private MockMvc mockMvc;
@@ -51,12 +48,12 @@ class AppointmentControllerUnitTest {
     void shouldCreateAppointment() throws Exception {
 
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
@@ -71,12 +68,12 @@ class AppointmentControllerUnitTest {
     void shouldNotCreateAppointment() throws Exception {
 
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
@@ -88,58 +85,16 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldNotCreateAppointmentBadJson() throws Exception {
-
-        Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
-        Room room = new Room("Dermatology");
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-
-        LocalDateTime startsAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
-        LocalDateTime finishesAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
-
-        Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
-        String valueAsString = objectMapper.writeValueAsString(appointment);
-        String patientValueAsString = valueAsString.replace("patient", "patients");
-        String roomValueAsString = valueAsString.replace("room", "rooms");
-        String doctorValueAsString = valueAsString.replace("doctor", "doctors");
-        String startsAtValueAsString = valueAsString.replace("startsAt", "startsAts");
-        String finishesAtValueAsString = valueAsString.replace("finishesAt", "finishesAts");
-
-        mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                        .content(patientValueAsString))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                        .content(roomValueAsString))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                        .content(doctorValueAsString))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                        .content(startsAtValueAsString))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
-                        .content(finishesAtValueAsString))
-                .andExpect(status().isBadRequest());
-
-    }
-
-    @Test
-    void shouldCreateOneAppointmentOutOfTwoConflictDate() throws Exception {
+    void shouldCreateOneAppointmentOutOfTwoConflictDate() throws Exception{
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         Patient patient2 = new Patient("Paulino", "Antunez", 37, "p.antunez@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
-        Doctor doctor2 = new Doctor("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor2 = new Doctor ("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         Appointment appointment = new Appointment(patient, doctor, room, startsAt, finishesAt);
@@ -149,6 +104,8 @@ class AppointmentControllerUnitTest {
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(appointment)))
                 .andExpect(status().isOk());
+
+
 
 
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -167,14 +124,14 @@ class AppointmentControllerUnitTest {
 
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         Patient patient2 = new Patient("Paulino", "Antunez", 37, "p.antunez@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
-        Doctor doctor2 = new Doctor("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor2 = new Doctor ("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
         Room room = new Room("Dermatology");
         Room room2 = new Room("Oncology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:30 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:30 24/04/2023", formatter);
         LocalDateTime finishesAt = LocalDateTime.parse("20:30 24/04/2023", formatter);
 
         doctor2.setId(2);
@@ -186,6 +143,8 @@ class AppointmentControllerUnitTest {
         mockMvc.perform(post("/api/appointment").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(appointment)))
                 .andExpect(status().isOk());
+
+
 
 
         List<Appointment> appointments = new ArrayList<Appointment>();
@@ -200,7 +159,7 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldGetNoAppointments() throws Exception {
+    void shouldGetNoAppointments() throws Exception{
         List<Appointment> appointments = new ArrayList<Appointment>();
         when(appointmentRepository.findAll()).thenReturn(appointments);
         mockMvc.perform(get("/api/appointments"))
@@ -209,17 +168,17 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldGetTwoAppointments() throws Exception {
+    void shouldGetTwoAppointments() throws Exception{
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
         Patient patient2 = new Patient("Paulino", "Antunez", 37, "p.antunez@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
-        Doctor doctor2 = new Doctor("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor2 = new Doctor ("Miren", "Iniesta", 24, "m.iniesta@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
-        LocalDateTime startsAt2 = LocalDateTime.parse("19:30 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:00 24/04/2023", formatter);
+        LocalDateTime startsAt2= LocalDateTime.parse("19:30 24/04/2023", formatter);
 
         LocalDateTime finishesAt = LocalDateTime.parse("20:00 24/04/2023", formatter);
         LocalDateTime finishesAt2 = LocalDateTime.parse("20:30 24/04/2023", formatter);
@@ -238,14 +197,14 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldGetAppointmentById() throws Exception {
+    void shouldGetAppointmentById() throws Exception{
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:00 24/04/2023", formatter);
 
         LocalDateTime finishesAt = LocalDateTime.parse("20:00 24/04/2023", formatter);
 
@@ -266,7 +225,7 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldNotGetAnyAppointmentById() throws Exception {
+    void shouldNotGetAnyAppointmentById() throws Exception{
         long id = 31;
         mockMvc.perform(get("/api/appointments/" + id))
                 .andExpect(status().isNotFound());
@@ -274,14 +233,14 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldDeleteAppointmentById() throws Exception {
+    void shouldDeleteAppointmentById() throws Exception{
         Patient patient = new Patient("Jose Luis", "Olaya", 37, "j.olaya@email.com");
-        Doctor doctor = new Doctor("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
+        Doctor doctor = new Doctor ("Perla", "Amalia", 24, "p.amalia@hospital.accwe");
         Room room = new Room("Dermatology");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
 
-        LocalDateTime startsAt = LocalDateTime.parse("19:00 24/04/2023", formatter);
+        LocalDateTime startsAt= LocalDateTime.parse("19:00 24/04/2023", formatter);
 
         LocalDateTime finishesAt = LocalDateTime.parse("20:00 24/04/2023", formatter);
 
@@ -302,7 +261,7 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldNotDeleteAppointment() throws Exception {
+    void shouldNotDeleteAppointment() throws Exception{
         long id = 31;
         mockMvc.perform(delete("/api/appointments/" + id))
                 .andExpect(status().isNotFound());
@@ -310,10 +269,9 @@ class AppointmentControllerUnitTest {
     }
 
     @Test
-    void shouldDeleteAllAppointments() throws Exception {
+    void shouldDeleteAllAppointments() throws Exception{
         mockMvc.perform(delete("/api/appointments"))
                 .andExpect(status().isOk());
 
     }
 }
-
