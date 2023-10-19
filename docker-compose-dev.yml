@@ -1,0 +1,50 @@
+version: "3.1"
+services:
+  db:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql.yml
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: $DATABASE_NAME
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+    volumes:
+      - persistent:/var/lib/mysql
+    networks:
+      - default
+    env_file:
+      - .env
+  web:
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile.maven.yml
+
+    ports:
+      - "8080:8080"
+    networks:
+      - default
+    depends_on:
+      - db
+
+  phpmyadmin:
+    restart: always
+    image: phpmyadmin/phpmyadmin
+    links:
+      - db:db
+    ports:
+      - 8081:80
+    environment:
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
+
+
+
+volumes:
+  persistent: { }
