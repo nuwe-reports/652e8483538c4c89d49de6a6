@@ -1,0 +1,6 @@
+FROM mysql:latest
+
+MAINTAINER lucian cati
+
+RUN chown -R mysql:root /var/lib/mysql/
+EXPOSE 3306
